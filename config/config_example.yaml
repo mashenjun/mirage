@@ -1,0 +1,59 @@
+---
+server:
+  addr: 0.0.0.0:9999
+  request_timeout: 3 # second
+  response_timeout: 120 # second, for pprof change it to 120
+
+mysql:
+  driver: mysql
+  dsn: root:root@tcp(localhost:3306)/intelliecard?charset=utf8mb4&parseTime=True&loc=Local
+  max_open_conns: 20
+  max_idle_conns: 10
+  max_life_conns: 60
+
+sql_server:
+  #  driver: mysql
+  #  dsn: root:root@tcp(localhost:3306)/intelliecard?charset=utf8mb4&parseTime=True&loc=Local
+  driver: mssql
+  dsn: sqlserver://SA:31415926Mssql@localhost:1433?database=intelliecard
+  max_open_conns: 20
+  max_idle_conns: 10
+  max_life_conns: 60
+
+deadline:
+  breakfast: "07:30:00"
+  lunch: "11:30:00"
+  dinner: "17:30:00"
+  supper: "19:30:00"
+
+meal_meta:
+  allow_range_enable: true
+  allow_start: "07:00:00"
+  allow_end: "23:00:00"
+
+  offset_days: 1
+
+  breakfast:
+    deadline: "07:30:00"
+  lunch:
+    deadline: "11:30:00"
+  dinner:
+    deadline: "17:30:00"
+  supper:
+    deadline: "19:30:00"
+    disable: true
+
+log:
+  level: "debug"
+
+recent_days: 3
+
+sites:
+  - site_id: 1
+    site_name: "中石化催化剂大连食堂"
+#  - site_id: 2
+#    site_name: "食堂2"
+
+wx_config:
+  app_id: ""
+  app_secret: ""
