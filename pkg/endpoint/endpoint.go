@@ -1,6 +1,8 @@
 package endpoint
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	apiErr "github.com/mashenjun/mirage/errors"
@@ -13,6 +15,7 @@ type Endpoint struct {
 }
 
 func (ep *Endpoint) MountOn(router *gin.Engine) {
+	router.GET("/ping", ep.Ping)
 	router.POST("/advertise", ep.GetAdvertise)
 	router.POST("/access_code", ep.GetAccessCode)
 }
@@ -49,4 +52,8 @@ func (ep *Endpoint) GetAccessCode(ctx *gin.Context) {
 		return
 	}
 	util.EncodeResp(ctx, data)
+}
+
+func (ep *Endpoint) Ping(ctx *gin.Context) {
+	ctx.String(http.StatusOK, "ok")
 }

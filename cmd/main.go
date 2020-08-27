@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 
-	"github.com/containous/traefik/log"
+	"github.com/mashenjun/mirage/log"
 
 	"github.com/mashenjun/mirage/config"
 	"github.com/mashenjun/mirage/pkg/endpoint"
@@ -25,13 +25,12 @@ var (
 )
 
 func main() {
-	flag.StringVar(&cfgPath, "cfgPath", "./", "intelliecard -cfgPath=/path/to/config.yaml")
+	flag.StringVar(&cfgPath, "cfgPath", "./", "mirage -cfgPath=/path/to/config.yaml")
 
 	flag.Parse()
 	if err := config.InitOption(cfgPath); err != nil {
 		log.Panic(err)
 	}
-	gin.SetMode(gin.ReleaseMode)
 	// router
 	router := gin.New()
 
@@ -54,7 +53,7 @@ func main() {
 	defer fd.Close()
 	log.SetOutput(fd)
 
-	rdsCli := redis.NewClient(config.Options.RedisConfig)
+	rdsCli := redis.NewClient(config.Options.Redis.ToOptions())
 
 	srv, err := service.New(rdsCli)
 	if err != nil {

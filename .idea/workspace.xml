@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="93de8e77-10fe-4088-9e74-934f39306a25" name="Default Changelist" comment="" />
+    <list default="true" id="93de8e77-10fe-4088-9e74-934f39306a25" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/third_party/faceai/consts.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/faceai/proto.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/proto.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/proto.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/advertise_dao.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/advertise_dao.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/service/proto.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/proto.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/faceai/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/faceai/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/third_party/faceai/client_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/third_party/faceai/client_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/rpc/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/http/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/rpc/client_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/http/client_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/rpc/option.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/http/option.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,16 +54,48 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pkg/middleware" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/log" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/log" />
+      <recent name="$PROJECT_DIR$/util/rpc" />
       <recent name="$PROJECT_DIR$/pkg/middleware" />
       <recent name="$PROJECT_DIR$/pkg/service" />
     </key>
+  </component>
+  <component name="RunManager" selected="Go Test.TestClient_GetAccessToken in github.com/mashenjun/mirage/third_party/faceai">
+    <configuration name="TestClient_EditAttr in github.com/mashenjun/mirage/third_party/faceai" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="mirage" />
+      <working_directory value="$PROJECT_DIR$/third_party/faceai" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/mashenjun/mirage/third_party/faceai" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^TestClient_EditAttr$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestClient_GetAccessToken in github.com/mashenjun/mirage/third_party/faceai" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="mirage" />
+      <working_directory value="$PROJECT_DIR$/third_party/faceai" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/mashenjun/mirage/third_party/faceai" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^TestClient_GetAccessToken$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestClient_GetAccessToken in github.com/mashenjun/mirage/third_party/faceai" />
+        <item itemvalue="Go Test.TestClient_EditAttr in github.com/mashenjun/mirage/third_party/faceai" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
@@ -61,5 +109,49 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="520" y="290" key="#Go_Modules/0.0.1440.900@0.0.1440.900" timestamp="1598037794663" />
+    <state width="1398" height="183" key="GridCell.Tab.0.bottom" timestamp="1598599689457">
+      <screen x="42" y="23" width="1398" height="877" />
+    </state>
+    <state width="1398" height="183" key="GridCell.Tab.0.bottom/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598592506297" />
+    <state width="1398" height="238" key="GridCell.Tab.0.bottom/42.0.1398.900/0.-1057.1920.1057@42.0.1398.900" timestamp="1598591451518" />
+    <state width="1398" height="183" key="GridCell.Tab.0.bottom/42.23.1398.877/0.-1057.1920.1057@42.23.1398.877" timestamp="1598599689457" />
+    <state width="1398" height="183" key="GridCell.Tab.0.center" timestamp="1598599689453">
+      <screen x="42" y="23" width="1398" height="877" />
+    </state>
+    <state width="1398" height="183" key="GridCell.Tab.0.center/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598592506293" />
+    <state width="1398" height="238" key="GridCell.Tab.0.center/42.0.1398.900/0.-1057.1920.1057@42.0.1398.900" timestamp="1598591451516" />
+    <state width="1398" height="183" key="GridCell.Tab.0.center/42.23.1398.877/0.-1057.1920.1057@42.23.1398.877" timestamp="1598599689453" />
+    <state width="1398" height="183" key="GridCell.Tab.0.left" timestamp="1598599689412">
+      <screen x="42" y="23" width="1398" height="877" />
+    </state>
+    <state width="1398" height="183" key="GridCell.Tab.0.left/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598592506291" />
+    <state width="1398" height="238" key="GridCell.Tab.0.left/42.0.1398.900/0.-1057.1920.1057@42.0.1398.900" timestamp="1598591451514" />
+    <state width="1398" height="183" key="GridCell.Tab.0.left/42.23.1398.877/0.-1057.1920.1057@42.23.1398.877" timestamp="1598599689412" />
+    <state width="1398" height="183" key="GridCell.Tab.0.right" timestamp="1598599689455">
+      <screen x="42" y="23" width="1398" height="877" />
+    </state>
+    <state width="1398" height="183" key="GridCell.Tab.0.right/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598592506295" />
+    <state width="1398" height="238" key="GridCell.Tab.0.right/42.0.1398.900/0.-1057.1920.1057@42.0.1398.900" timestamp="1598591451517" />
+    <state width="1398" height="183" key="GridCell.Tab.0.right/42.23.1398.877/0.-1057.1920.1057@42.23.1398.877" timestamp="1598599689455" />
+    <state width="1398" height="294" key="GridCell.Tab.1.bottom" timestamp="1598589410101">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="294" key="GridCell.Tab.1.bottom/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598589410101" />
+    <state width="1398" height="294" key="GridCell.Tab.1.center" timestamp="1598589410098">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="294" key="GridCell.Tab.1.center/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598589410098" />
+    <state width="1398" height="294" key="GridCell.Tab.1.left" timestamp="1598589410097">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="294" key="GridCell.Tab.1.left/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598589410097" />
+    <state width="1398" height="294" key="GridCell.Tab.1.right" timestamp="1598589410099">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="294" key="GridCell.Tab.1.right/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598589410099" />
+    <state width="720" height="450" key="XDebugger.FullValuePopup" timestamp="1598587839837">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="720" height="450" key="XDebugger.FullValuePopup/0.0.1440.900/0.-1080.1920.1080@0.0.1440.900" timestamp="1598587839837" />
   </component>
 </project>

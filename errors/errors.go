@@ -6,8 +6,8 @@ import (
 )
 
 type ErrorInfo struct {
-	Code    uint32 `json:"err_code"`
-	Message string `json:"err_message"`
+	Code    uint32 `json:"code"`
+	Message string `json:"message"`
 }
 
 func NewErrorInfo(major, minor int, message string) ErrorInfo {
@@ -34,8 +34,6 @@ var (
 	ErrTokenExpired = func() ErrorInfo { return NewErrorInfo(http.StatusUnauthorized, 101, "token失效") }
 	ErrForbidden    = func(msg string) ErrorInfo { return NewErrorInfo(http.StatusForbidden, 100, msg) }
 	// biz error
-	ErrEmpNotFound     = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 101, "工号不存在") }
-	ErrPasswordInvalid = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 102, "密码不正确") }
-	ErrNotBind         = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 103, "还未绑定工号") }
-	ErrAlreadyBind     = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 104, "已经被绑定工号") }
+	ErrFaceNotFound     = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 101, "没有识别到人脸") }
+
 )
