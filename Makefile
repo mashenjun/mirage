@@ -17,12 +17,14 @@ PACKAGE_LIST        := go list ./...| grep -vE "cmd"
 PACKAGES            := $$($(PACKAGE_LIST))
 
 # Targets
-.PHONY: dev
+.PHONY: dev build_linux
 
 CURDIR := $(shell pwd)
 export PATH := $(CURDIR)/bin/:$(PATH)
 
 # run starts the server with dev config
 dev:
-	$(GORUN) $(CURIR)cmd/main.go -cfgPath=$(CURIR)config/config_example.yaml
+	$(GORUN) $(CURIR)cmd/main.go -cfgPath=$(CURIR)dev/config.yaml
 
+build_linux:
+	CGO=false GOOS=linux GOARCH=amd64 go build -o bin/miraged cmd/main.go

@@ -59,10 +59,14 @@ type FaceInfo struct {
 	Age       float64 `json:"age"`
 }
 
-type DetectResp struct {
-	BaseResp
+type DetectResult struct {
 	FaceNum  int64      `json:"face_num"`
 	FaceList []FaceInfo `json:"face_list"`
+}
+
+type DetectResp struct {
+	BaseResp
+	Result DetectResult `json:"result"`
 }
 
 type StyleTransParam struct {

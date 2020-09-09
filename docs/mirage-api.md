@@ -1,7 +1,6 @@
 # API文档说明
 
 ## 调用接口说明
-- 统一采用POST + JSON 方式请求
 - request请求时必须添加header头：Content-Type:application/json
 - 所有的接口的返回形式都是统一为：
     - 正常返回
@@ -94,7 +93,262 @@ Content-Type: application/json
 | data.candidates[i].image_url | `string` | 封面图地址 |
 | data.candidates[i].location | `string` | 跳转链接 |
 | data.candidates[i].action | `int` | 广告类型 0 广告 1 原生页面 2 webView|
-| data.candidates[i].ad_id | `string` | 微信用户唯一标识 OpenID |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## 检测人脸年龄 API
+
+检测人脸年龄
+
+### 请求
+
+```
+POST /api/v1/face/detect HTTP/1.1
+Content-Type: application/json
+
+{
+    "image": "<base64 string>"
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| image | `string` | 是   | 图片oss地址 |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "age": 10.5
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.age   | `float` | 年龄           |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## 修改人脸 API
+
+修改人脸
+
+### 请求
+
+```
+POST /api/v1/face/edit_attr HTTP/1.1
+Content-Type: application/json
+
+{
+    "image": "<base64 string>",
+    "action_type": "TO_KID"
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| image | `string` | 是   | 图片oss地址 |
+| action_type | `string` | 是   | 可选值 TO_KID; TO_OLD; TO_FEMALE; TO_MALE |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "image": "<base64 string>"
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的base64字符串          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## 修改图片风格 API
+
+修改图片风格
+
+### 请求
+
+```
+POST /api/v1/image_process/style_trans HTTP/1.1
+Content-Type: application/json
+
+{
+    "image": "<base64 string>",
+    "option": "cartoon"
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| image | `string` | 是   | 图片oss地址 |
+| option | `string` | 是   |cartoon：卡通画风格; pencil：铅笔风格; color_pencil：彩色铅笔画风格; warm：彩色糖块油画风格; wave：神奈川冲浪里油画风格; lavender：薰衣草油画风格; mononoke：奇异油画风格; scream：呐喊油画风格; gothic：哥特油画风格 |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "image": "<base64 string>"
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的base64字符串          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+
+## 人脸动漫化 API
+
+人脸动漫化
+
+### 请求
+
+```
+POST /api/v1/image_process/selie_anime HTTP/1.1
+Content-Type: application/json
+
+{
+    "image": "<base64 string>",
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| image | `string` | 是   | 图片oss地址 |
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "image": "<base64 string>"
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的base64字符串          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## OSS上传签名 API
+
+OSS上传签名
+
+### 请求
+
+```
+POST /api/v1/upload_signature HTTP/1.1
+Content-Type: application/json
+
+{}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "end_point":"<endpoint>",
+        "access_key_id": "ak",	
+        "access_key_secret": "sk",	
+        "bucket_name": "bn",	
+        "expiration": 3600,	
+        "security_token": "stk",	
+        "path": "/",
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的base64字符串          |
 
 #### 错误码
 

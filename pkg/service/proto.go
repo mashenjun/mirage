@@ -32,7 +32,7 @@ type EditAttrData struct {
 }
 
 type DetectFaceParam struct {
-	Image string `json:"image"`
+	Image  string `json:"image"` // image is the url point to oss url
 }
 
 func (param *DetectFaceParam) validate() error {
@@ -78,4 +78,14 @@ func (param *SelfieAnimeParam) validate() error {
 
 type SelfieAnimeData struct {
 	Image string `json:"image"`
+}
+
+type UploadSignatureData struct {
+	EndPoint        string `json:"end_point"`
+	AccessKeyId     string `json:"access_key_id"`
+	AccessKeySecret string `json:"access_key_secret"`
+	BucketName      string `son:"bucket_name"`
+	Expiration      int64  `json:"expiration"`
+	SecurityToken   string `json:"security_token"`
+	Path            string `json:"path"`
 }

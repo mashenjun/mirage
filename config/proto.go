@@ -13,9 +13,15 @@ import (
 // define the struct for config
 type AppOptions struct {
 	Server *ServerConfig `yaml:"server"`
-	Log    LogConfig    `yaml:"log"`
+	Log    LogConfig     `yaml:"log"`
 
 	Redis *RedisConfig `yaml:"redis"`
+
+	FaceAI FaceAIConfig `yaml:"face_ai"`
+
+	OSS OSSConfig `yaml:"oss"`
+
+	STS STSConfig `yaml:"sts"`
 }
 
 func (opt *AppOptions) FillWithDefaults() {
@@ -60,7 +66,7 @@ func (cfg *LogConfig) GetLevel() (logrus.Level, error) {
 
 func (cfg *LogConfig) GetWriter() (io.WriteCloser, error) {
 	if len(cfg.Output) == 0 {
-		return os.Stderr, nil
+		return os.Stdout, nil
 	}
 	switch cfg.Output {
 	case "stderr":
@@ -135,4 +141,25 @@ func (cfg *RedisConfig) ToOptions() *redis.Options {
 		MinIdleConns: cfg.MinIdleConns,
 		MaxRetries:   cfg.MaxRetries,
 	}
+}
+
+type FaceAIConfig struct {
+	Ak       string `yaml:"ak"`
+	Sk       string `yaml:"sk"`
+	Endpoint string `yaml:"endpoint"`
+}
+
+type OSSConfig struct {
+	PublicEndpoint       string `yaml:"public_endpoint"`
+	InternalEndpoint     string `yaml:"internal_endpoint"`
+	PublicBucketEndpoint string `yaml:"public_bucket_endpoint"`
+	BucketName           string `yaml:"bucket_name"`
+	Ak                   string `yaml:"ak"`
+	Sk                   string `yaml:"sk"`
+}
+
+type STSConfig struct {
+	RamAK string `yaml:"ram_ak"`
+	RamSK string `yaml:"ram_sk"`
+	ARN   string `yaml:"arn"`
 }

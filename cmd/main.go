@@ -8,11 +8,15 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	"github.com/sirupsen/logrus"
 
 	"github.com/mashenjun/mirage/log"
+	"github.com/mashenjun/mirage/model"
+	"github.com/mashenjun/mirage/third_party/faceai"
 
 	"github.com/mashenjun/mirage/config"
 	"github.com/mashenjun/mirage/pkg/endpoint"
@@ -40,7 +44,7 @@ func main() {
 	// router.Use(gzip.Gzip(gzip.BestCompression))
 	pprof.Register(router)
 	prom.Register(router)
-
+	log.Infof("sts: %+v",config.Options.STS)
 	lvl, err := config.Options.Log.GetLevel()
 	if err != nil {
 		log.Panic(err)
@@ -52,19 +56,33 @@ func main() {
 	}
 	defer fd.Close()
 	log.SetOutput(fd)
+	log.SetFormatter(&logrus.JSONFormatter{})
 
 	rdsCli := redis.NewClient(config.Options.Redis.ToOptions())
-
-	srv, err := service.New(rdsCli)
+	advDao, err := model.NewAdvertiseDao(rdsCli)
 	if err != nil {
 		log.Panic(err)
 	}
-
+	faceAICli, err := faceai.New(config.Options.FaceAI.Endpoint,
+		config.Options.FaceAI.Ak, config.Options.FaceAI.Sk,
+		faceai.CacheOption(rdsCli))
+	if err != nil {
+		log.Panic(err)
+	}
+	ossCli, err := oss.New(config.Options.OSS.InternalEndpoint, config.Options.OSS.Ak, config.Options.OSS.Sk)
+	if err != nil {
+		log.Panic(err)
+	}
+	srv, err := service.New(advDao, faceAICli, ossCli,
+		service.OSSOption(config.Options.OSS.BucketName, config.Options.OSS.PublicEndpoint, config.Options.OSS.PublicBucketEndpoint),
+		service.STSOption(config.Options.STS.RamAK, config.Options.STS.RamSK, config.Options.STS.ARN))
+	if err != nil {
+		log.Panic(err)
+	}
 	ep, err := endpoint.New(srv)
 	if err != nil {
 		log.Panic(err)
 	}
-
 	ep.MountOn(router)
 
 	httpServer := &http.Server{
@@ -79,8 +97,8 @@ func main() {
 
 	go func() {
 		// service connections
-		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Panicf("listen err: %s", err)
+		if err := httpServer.ListenAndServe(); err != nil {
+			log.Panicf("listen err: %v", err)
 		}
 	}()
 	log.Infof("listen on %s", config.Options.Server.Addr)

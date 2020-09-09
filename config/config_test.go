@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"gopkg.in/yaml.v2"
-
-	"github.com/qingyuanz/intelliecard/consts"
-)
+	)
 
 func TestInitOption(t *testing.T) {
 
@@ -62,6 +60,4 @@ func TestAppOptionsStruct(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("%+v", option)
-	FillSites(option)
-	t.Logf("%+v", consts.Sites)
 }

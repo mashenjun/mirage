@@ -135,7 +135,7 @@ func (cli *Client) Detect(ctx context.Context, param DetectParam) (int64, []Face
 	if ret.Code != 0 {
 		return 0, nil, fmt.Errorf("code:%+v with message:%+v", ret.Code, ret.Message)
 	}
-	return ret.FaceNum, ret.FaceList, nil
+	return ret.Result.FaceNum, ret.Result.FaceList, nil
 }
 
 func (cli *Client) StyleTrans(ctx context.Context, param StyleTransParam) (string, error) {

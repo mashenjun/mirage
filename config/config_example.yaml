@@ -18,3 +18,20 @@ redis:
   pool_timeout: 10
   min_idle_conns: 5
   max_retries: 3
+
+face_ai:
+  ak: "PtzcUyPzKx3QcdZ73iYE9qT4"
+  sk: "KU9imdLBWOU2rHjq7TvA8Yrc0rUVrkTa"
+  endpoint: "https://aip.baidubce.com"
+
+oss:
+  public_endpoint:
+  internal_endpoint:
+  public_bucket_endpoint:
+  ak:
+  sk:
+
+sts:
+  ram_ak:
+  ram_sk:
+  arn:
