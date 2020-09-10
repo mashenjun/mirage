@@ -21,8 +21,8 @@ type AdvCandidate struct {
 	ImageURL  string `json:"image_url"`
 	CoolDown  int64  `json:"cool_down"`
 	CountDown int64  `json:"count_down"`
-	Location  string `json:"location"`
-	Action    int64  `json:"action"`
+	Location  string `json:"location"` // 跳转地址
+	Action    int64  `json:"action"` // 0 广告; 1 原生; 2 webView
 }
 
 type AdvConfig struct {

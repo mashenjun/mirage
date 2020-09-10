@@ -33,7 +33,8 @@ func New(srv *service.Service) (*Endpoint, error) {
 
 func (ep *Endpoint) GetAdvertise(ctx *gin.Context) {
 	param := service.GetAdvertiseParam{}
-	param.AdCode = ctx.Param("ad_code")
+	param.AdCode = ctx.Query("type")
+	param.Extra = ctx.Query("extra")
 	data, err := ep.srv.GetAdvertise(ctx, param)
 	if err != nil {
 		util.EncodeError(ctx, err)

@@ -44,7 +44,6 @@ func main() {
 	// router.Use(gzip.Gzip(gzip.BestCompression))
 	pprof.Register(router)
 	prom.Register(router)
-	log.Infof("sts: %+v",config.Options.STS)
 	lvl, err := config.Options.Log.GetLevel()
 	if err != nil {
 		log.Panic(err)

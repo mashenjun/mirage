@@ -4,6 +4,14 @@ import "errors"
 
 type GetAdvertiseParam struct {
 	AdCode string `json:"ad_code"`
+	Extra  string `json:"extra"`
+}
+
+func (param *GetAdvertiseParam) validate() error {
+	if len(param.AdCode) == 0 {
+		return errors.New("param is invalid")
+	}
+	return nil
 }
 
 type GetAccessCodeParam struct {
@@ -32,7 +40,7 @@ type EditAttrData struct {
 }
 
 type DetectFaceParam struct {
-	Image  string `json:"image"` // image is the url point to oss url
+	Image string `json:"image"` // image is the url point to oss url
 }
 
 func (param *DetectFaceParam) validate() error {
@@ -84,7 +92,7 @@ type UploadSignatureData struct {
 	EndPoint        string `json:"end_point"`
 	AccessKeyId     string `json:"access_key_id"`
 	AccessKeySecret string `json:"access_key_secret"`
-	BucketName      string `son:"bucket_name"`
+	BucketName      string `json:"bucket_name"`
 	Expiration      int64  `json:"expiration"`
 	SecurityToken   string `json:"security_token"`
 	Path            string `json:"path"`
