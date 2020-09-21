@@ -62,18 +62,24 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	templateDao, err := model.NewTemplateImageDao(rdsCli)
+	if err != nil {
+		log.Panic(err)
+	}
 	faceAICli, err := faceai.New(config.Options.FaceAI.Endpoint,
 		config.Options.FaceAI.Ak, config.Options.FaceAI.Sk,
-		faceai.CacheOption(rdsCli))
+		faceai.CacheOption(rdsCli),
+		faceai.TimeoutOption(30*time.Second))
 	if err != nil {
 		log.Panic(err)
 	}
-	ossCli, err := oss.New(config.Options.OSS.InternalEndpoint, config.Options.OSS.Ak, config.Options.OSS.Sk)
+	ossCli, err := oss.New(config.Options.OSS.InternalEndpoint, config.Options.OSS.Ak, config.Options.OSS.Sk,
+		oss.Timeout(1, 10))
 	if err != nil {
 		log.Panic(err)
 	}
-	srv, err := service.New(advDao, faceAICli, ossCli,
-		service.OSSOption(config.Options.OSS.BucketName, config.Options.OSS.PublicEndpoint, config.Options.OSS.PublicBucketEndpoint),
+	srv, err := service.New(advDao, templateDao, faceAICli, ossCli,
+		service.OSSOption(config.Options.OSS.BucketName, config.Options.OSS.PublicEndpoint, config.Options.OSS.PublicBucketEndpoint, config.Options.OSS.PathPrefix),
 		service.STSOption(config.Options.STS.RamAK, config.Options.STS.RamSK, config.Options.STS.ARN))
 	if err != nil {
 		log.Panic(err)

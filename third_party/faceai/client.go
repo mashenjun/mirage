@@ -116,7 +116,7 @@ func (cli *Client) EditAttr(ctx context.Context, param EditAttrParam) (*EditAttD
 		return nil, err
 	}
 	if ret.Code != 0 {
-		return nil, fmt.Errorf("code:%+v with message:%+v", ret.Code, ret.Message)
+		return nil, &ret.BaseResp
 	}
 	return &ret.Result, nil
 }
@@ -133,7 +133,7 @@ func (cli *Client) Detect(ctx context.Context, param DetectParam) (int64, []Face
 		return 0, nil, err
 	}
 	if ret.Code != 0 {
-		return 0, nil, fmt.Errorf("code:%+v with message:%+v", ret.Code, ret.Message)
+		return 0, nil, &ret.BaseResp
 	}
 	return ret.Result.FaceNum, ret.Result.FaceList, nil
 }
@@ -154,7 +154,7 @@ func (cli *Client) StyleTrans(ctx context.Context, param StyleTransParam) (strin
 		return "", err
 	}
 	if ret.Code != 0 {
-		return "", fmt.Errorf("code:%+v with message:%+v", ret.Code, ret.Message)
+		return "", &ret.BaseResp
 	}
 	return ret.Image, nil
 }
@@ -175,7 +175,45 @@ func (cli *Client) SelfieAnime(ctx context.Context, param SelfieAnimeParam) (str
 		return "", err
 	}
 	if ret.Code != 0 {
-		return "", fmt.Errorf("code:%+v with message:%+v", ret.Code, ret.Message)
+		return "", &ret.BaseResp
 	}
 	return ret.Image, nil
 }
+
+func (cli *Client) MergeFace(ctx context.Context, param MergeFaceParam) (string, error) {
+	token, err := cli.getAccessToken(ctx)
+	if err != nil {
+		return "", err
+	}
+	u := fmt.Sprintf("%s%s?access_token=%s", cli.endpoint, mergeFacePath, token)
+
+	ret := new(MergeFaceResp)
+	if err := cli.client.CallWithJson(ctx, ret, http.MethodPost, u, param); err != nil {
+		return "", err
+	}
+	if ret.Code != 0 {
+		return "", &ret.BaseResp
+	}
+	return ret.Result.MergeImage, nil
+}
+
+func (cli *Client) BodySeg(ctx context.Context, param BodySegParam) (*BodySegResp, error) {
+	token, err := cli.getAccessToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+	u := fmt.Sprintf("%s%s?access_token=%s", cli.endpoint, bodySegPath, token)
+	form, err := param.ToForm()
+	if err != nil {
+		return nil, err
+	}
+	ret := new(BodySegResp)
+	if err := cli.client.CallWithForm(ctx, ret, http.MethodPost, u, form); err != nil {
+		return nil, err
+	}
+	if ret.Code != 0 {
+		return nil, &ret.BaseResp
+	}
+	return ret, nil
+}
+

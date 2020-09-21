@@ -35,5 +35,6 @@ var (
 	ErrForbidden    = func(msg string) ErrorInfo { return NewErrorInfo(http.StatusForbidden, 100, msg) }
 	// biz error
 	ErrFaceNotFound     = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 101, "没有识别到人脸") }
+	ErrBodyNotFound     = func() ErrorInfo { return NewErrorInfo(http.StatusOK, 102, "没有识别到人像") }
 
 )

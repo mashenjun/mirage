@@ -1,6 +1,8 @@
 package service
 
-import "errors"
+import (
+	"errors"
+)
 
 type GetAdvertiseParam struct {
 	AdCode string `json:"ad_code"`
@@ -9,6 +11,17 @@ type GetAdvertiseParam struct {
 
 func (param *GetAdvertiseParam) validate() error {
 	if len(param.AdCode) == 0 {
+		return errors.New("param is invalid")
+	}
+	return nil
+}
+
+type GetTemplateParam struct {
+	Type string `json:"type"`
+}
+
+func (param *GetTemplateParam) validate() error {
+	if len(param.Type) == 0 {
 		return errors.New("param is invalid")
 	}
 	return nil
@@ -96,4 +109,38 @@ type UploadSignatureData struct {
 	Expiration      int64  `json:"expiration"`
 	SecurityToken   string `json:"security_token"`
 	Path            string `json:"path"`
+}
+
+type MergeFaceParam struct {
+	TemplateImage string `json:"template_image"`
+	TargetImage string `json:"target_image"`
+}
+
+func (param *MergeFaceParam) validate() error {
+	if len(param.TemplateImage) == 0 {
+		return errors.New("param.template_image is invalid")
+	}
+	if len(param.TargetImage) == 0 {
+		return errors.New("param.target_image is invalid")
+	}
+	return nil
+}
+
+type MergeFaceData struct {
+	Image string `json:"image"`
+}
+
+type BodySegParam struct {
+	Image string `json:"image"`
+}
+
+func (param *BodySegParam) validate() error {
+	if len(param.Image) == 0 {
+		return errors.New("param.image is invalid")
+	}
+	return nil
+}
+
+type BodySegData struct {
+	Image string `json:"image"`
 }

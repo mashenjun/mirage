@@ -6,6 +6,8 @@ const (
 	detectPath      = "/rest/2.0/face/v3/detect"
 	styleTransPath  = "/rest/2.0/image-process/v1/style_trans"
 	selfieAnimePath = "/rest/2.0/image-process/v1/selfie_anime"
+	mergeFacePath   = "/rest/2.0/face/v1/merge"
+	bodySegPath     = "/rest/2.0/image-classify/v1/body_seg"
 
 	accessTokenKey = "accesstoken"
 )

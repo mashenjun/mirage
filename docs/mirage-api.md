@@ -35,20 +35,16 @@
 ### 请求
 
 ```
-POST /api/v1/config/advertise HTTP/1.1
+GET /api/v1/config/advertise?type=<xxx> HTTP/1.1
 Content-Type: application/json
 
-{
-    "ad_code": "xxxx",
-    "extra":"xxxx"
-}
 ```
 
 #### 参数说明
 
 | 名称 | 类型     | 必选 | 描述                 |
 | :--- | :------- | :--- | :------------------- |
-| ad_code | `string` | 是   | 广告位code |
+| type | `string` | 是   | 广告位code |
 | extra | `string` | 否   | 额外信息字段 |
 
 
@@ -356,3 +352,156 @@ Content-Type: application/json
 | ------ | ----- |
 | xxx    | ooooo |
 
+
+## 人脸融合 API
+
+人脸融合
+
+### 请求
+
+```
+POST /api/v1/face/merge HTTP/1.1
+Content-Type: application/json
+
+{
+    "template_image": "<url>",
+    "target_image": "<url>",
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| template_image | `string` | 是   | 模板图片oss地址 |
+| target_image | `string` | 是   | 目标图片oss地址 |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "image": "<url>"
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的oss地址          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## 人像分割 API
+
+人像分割
+
+### 请求
+
+```
+POST /api/v1/image_process/body_seg HTTP/1.1
+Content-Type: application/json
+
+{
+    "image": "<url>",
+}
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| image | `string` | 是   | 图片oss地址 |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "image": "<url>"
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.image   | `string` |  处理后图片的oss地址          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |
+
+
+## 获取模板图 API
+
+获取模板图
+
+### 请求
+
+```
+GET /api/v1/config/template?type=<xxx> HTTP/1.1
+Content-Type: application/json
+
+```
+
+#### 参数说明
+
+| 名称 | 类型     | 必选 | 描述                 |
+| :--- | :------- | :--- | :------------------- |
+| type | `string` | 是   | 场景类型 |
+
+
+### 返回
+
+```
+200 OK / 202 Accepted
+Content-Type: application/json
+
+{
+    "code": "<error code>",
+    "message": "<error message>",
+    "data": {
+        "templates": [
+        {
+            "name":<xxx>,
+            "image":<url>
+        },
+        ...]
+    }
+}
+```
+
+#### 结果说明
+
+| 名称    | 类型     | 描述                    |
+| :------ | :------- | :---------------------- |
+| data.templates   | `array` | 模板信息          |
+
+#### 错误码
+
+| 错误码 | 说明  |
+| ------ | ----- |
+| xxx    | ooooo |

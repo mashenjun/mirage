@@ -156,6 +156,7 @@ type OSSConfig struct {
 	BucketName           string `yaml:"bucket_name"`
 	Ak                   string `yaml:"ak"`
 	Sk                   string `yaml:"sk"`
+	PathPrefix           string `yaml:"path_prefix"`
 }
 
 type STSConfig struct {

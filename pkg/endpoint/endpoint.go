@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	apiErr "github.com/mashenjun/mirage/errors"
+	"github.com/mashenjun/mirage/log"
 	"github.com/mashenjun/mirage/pkg/service"
 	"github.com/mashenjun/mirage/util"
 )
@@ -18,10 +19,13 @@ func (ep *Endpoint) MountOn(router *gin.Engine) {
 	router.GET("/ping", ep.Ping)
 	apiV1 := router.Group("/api/v1")
 	apiV1.GET("/config/advertise", ep.GetAdvertise)
+	apiV1.GET("/config/template", ep.GetTemplates)
 	apiV1.POST("/face/detect", ep.DetectFace)
 	apiV1.POST("/face/edit_attr", ep.EditAttr)
+	apiV1.POST("/face/merge", ep.MergeFace)
 	apiV1.POST("/image_process/style_trans", ep.StyleTrans)
 	apiV1.POST("/image_process/selie_anime", ep.SelieAnime)
+	apiV1.POST("/image_process/body_seg", ep.BodySeg)
 	apiV1.POST("/upload_signature", ep.UploadSignature)
 }
 
@@ -36,6 +40,17 @@ func (ep *Endpoint) GetAdvertise(ctx *gin.Context) {
 	param.AdCode = ctx.Query("type")
 	param.Extra = ctx.Query("extra")
 	data, err := ep.srv.GetAdvertise(ctx, param)
+	if err != nil {
+		util.EncodeError(ctx, err)
+		return
+	}
+	util.EncodeResp(ctx, data)
+}
+
+func (ep *Endpoint) GetTemplates(ctx *gin.Context) {
+	param := service.GetTemplateParam{}
+	param.Type = ctx.Query("type")
+	data, err := ep.srv.GetTemplate(ctx, param)
 	if err != nil {
 		util.EncodeError(ctx, err)
 		return
@@ -104,6 +119,7 @@ func (ep *Endpoint) StyleTrans(ctx *gin.Context) {
 }
 
 func (ep *Endpoint) SelieAnime(ctx *gin.Context) {
+	log.Info("SelieAnime")
 	param := service.SelfieAnimeParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
 		util.EncodeError(ctx, apiErr.ErrInvalidParameter(err.Error()))
@@ -119,6 +135,34 @@ func (ep *Endpoint) SelieAnime(ctx *gin.Context) {
 
 func (ep *Endpoint) UploadSignature(ctx *gin.Context) {
 	data, err := ep.srv.UploadSignature(ctx)
+	if err != nil {
+		util.EncodeError(ctx, err)
+		return
+	}
+	util.EncodeResp(ctx, data)
+}
+
+func (ep *Endpoint) MergeFace(ctx *gin.Context) {
+	param := service.MergeFaceParam{}
+	if err := ctx.ShouldBindJSON(&param); err != nil {
+		util.EncodeError(ctx, apiErr.ErrInvalidParameter(err.Error()))
+		return
+	}
+	data, err := ep.srv.MergeFace(ctx, param)
+	if err != nil {
+		util.EncodeError(ctx, err)
+		return
+	}
+	util.EncodeResp(ctx, data)
+}
+
+func (ep *Endpoint) BodySeg(ctx *gin.Context) {
+	param := service.BodySegParam{}
+	if err := ctx.ShouldBindJSON(&param); err != nil {
+		util.EncodeError(ctx, apiErr.ErrInvalidParameter(err.Error()))
+		return
+	}
+	data, err := ep.srv.BodySeg(ctx, param)
 	if err != nil {
 		util.EncodeError(ctx, err)
 		return

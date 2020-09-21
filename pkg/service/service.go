@@ -23,14 +23,16 @@ import (
 )
 
 type Service struct {
-	advDao    model.IAdvertiseDao
-	faceAICli *faceai.Client
+	advDao      model.IAdvertiseDao
+	templateDao model.ITemplateImageDao
+	faceAICli   *faceai.Client
 
 	ossCli *oss.Client
 
-	ossPublicEndpoint string
+	ossPublicEndpoint       string
 	ossPublicBucketEndpoint string
-	ossBucketName     string
+	ossBucketName           string
+	pathPrefix              string //需要以/结尾
 
 	ramAK string
 	ramSK string
@@ -39,11 +41,12 @@ type Service struct {
 
 type Option func(service *Service) error
 
-func OSSOption(bucketName string, publicEndpoint string, publicBucketEndpoint string) Option {
+func OSSOption(bucketName string, publicEndpoint string, publicBucketEndpoint string, pathPrefix string) Option {
 	return func(service *Service) error {
 		service.ossBucketName = bucketName
 		service.ossPublicEndpoint = publicEndpoint
 		service.ossPublicBucketEndpoint = publicBucketEndpoint
+		service.pathPrefix = pathPrefix
 		return nil
 	}
 }
@@ -57,11 +60,12 @@ func STSOption(ak string, sk string, arn string) Option {
 	}
 }
 
-func New(advDao model.IAdvertiseDao, faceAICli *faceai.Client, ossCli *oss.Client, opts ...Option) (*Service, error) {
+func New(advDao model.IAdvertiseDao, templateDao model.ITemplateImageDao, faceAICli *faceai.Client, ossCli *oss.Client, opts ...Option) (*Service, error) {
 	srv := &Service{
-		advDao:    advDao,
-		faceAICli: faceAICli,
-		ossCli:    ossCli,
+		advDao:      advDao,
+		templateDao: templateDao,
+		faceAICli:   faceAICli,
+		ossCli:      ossCli,
 	}
 	for _, opt := range opts {
 		if err := opt(srv); err != nil {
@@ -81,6 +85,17 @@ func (srv *Service) GetAdvertise(ctx context.Context, param GetAdvertiseParam) (
 		return model.EmptyAdvConfig, nil
 	}
 	return adv, nil
+}
+
+func (srv *Service) GetTemplate(ctx context.Context, param GetTemplateParam) (*model.TemplateImageConfig, error) {
+	template, err := srv.templateDao.Find(ctx, param.Type)
+	if err != nil && err != redis.Nil {
+		log.Errorf("advDao.Find err:%+v", err)
+		return nil, err
+	} else if err == redis.Nil {
+		return model.EmptyTemplateImageConfig, nil
+	}
+	return template, nil
 }
 
 // GetAccessCode returns access code from baidu ai
@@ -103,16 +118,26 @@ func (srv *Service) UploadSignature(ctx context.Context) (*UploadSignatureData, 
 		BucketName:      srv.ossBucketName,
 		Expiration:      resp.Credentials.Expiration.Unix(),
 		SecurityToken:   resp.Credentials.SecurityToken,
-		Path:            "/",
+		Path:            srv.pathPrefix,
 	}
 	return data, err
 }
 
 func (srv *Service) DetectFace(ctx context.Context, param DetectFaceParam) (*DetectFaceData, error) {
-	// todo
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
+	// u, err := url.Parse(param.Image)
+	// if err != nil {
+	// 	log.Errorf("parse err:%+v", err)
+	// 	return nil, apiErr.ErrInvalidParameter(err.Error())
+	// }
+	// key := strings.TrimPrefix(u.Path, "/")
+	// b64, err := srv.fetchAndBas64Encode(ctx, key)
+	// if err != nil {
+	// 	log.Errorf("fetchAndBas64Encode with key:%+v err:%+v", key, err)
+	// 	return nil, err
+	// }
 	_, info, err := srv.faceAICli.Detect(ctx, faceai.DetectParam{
 		Image:     param.Image,
 		ImageType: "URL",
@@ -134,6 +159,18 @@ func (srv *Service) EditAttr(ctx context.Context, param EditAttrParam) (*EditAtt
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
+	// u, err := url.Parse(param.Image)
+	// if err != nil {
+	// 	log.Errorf("parse err:%+v", err)
+	// 	return nil, apiErr.ErrInvalidParameter(err.Error())
+	// }
+	// key := strings.TrimPrefix(u.Path, "/")
+	// b64, err := srv.fetchAndBas64Encode(ctx, key)
+	// if err != nil {
+	// 	log.Errorf("fetchAndBas64Encode with key %+v err:%+v", key, err)
+	// 	return nil, err
+	// }
+	// log.Debugf("encode finish with length %+v", len(b64))
 	ret, err := srv.faceAICli.EditAttr(ctx, faceai.EditAttrParam{
 		Image:      param.Image,
 		ImageType:  "URL",
@@ -159,16 +196,17 @@ func (srv *Service) StyleTrans(ctx context.Context, param StyleTransParam) (*Sty
 	}
 	u, err := url.Parse(param.Image)
 	if err != nil {
+		log.Errorf("parse err:%+v", err)
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
 	key := strings.TrimPrefix(u.Path, "/")
 	b64, err := srv.fetchAndBas64Encode(ctx, key)
 	if err != nil {
-		log.Errorf("fetchAndBas64Encode err:%+v", err)
+		log.Errorf("fetchAndBas64Encode with key:%+v err:%+v", key, err)
 		return nil, err
 	}
 	p := faceai.StyleTransParam{
-		Image: b64,
+		Image:  b64,
 		Option: param.Option,
 	}
 	img, err := srv.faceAICli.StyleTrans(ctx, p)
@@ -187,6 +225,7 @@ func (srv *Service) StyleTrans(ctx context.Context, param StyleTransParam) (*Sty
 }
 
 func (srv *Service) SelieAnime(ctx context.Context, param SelfieAnimeParam) (*SelfieAnimeData, error) {
+	log.Infof("param:%+v", param)
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
@@ -197,9 +236,10 @@ func (srv *Service) SelieAnime(ctx context.Context, param SelfieAnimeParam) (*Se
 	key := strings.TrimPrefix(u.Path, "/")
 	b64, err := srv.fetchAndBas64Encode(ctx, key)
 	if err != nil {
-		log.Errorf("fetchAndBas64Encode err:%+v", err)
+		log.Errorf("fetchAndBas64Encode with key %+v err:%+v", key, err)
 		return nil, err
 	}
+	log.Debugf("encode finish with length %+v", len(b64))
 	img, err := srv.faceAICli.SelfieAnime(ctx, faceai.SelfieAnimeParam{
 		Image: b64,
 		Type:  "anime",
@@ -218,13 +258,80 @@ func (srv *Service) SelieAnime(ctx context.Context, param SelfieAnimeParam) (*Se
 	return data, nil
 }
 
+func (srv *Service) MergeFace(ctx context.Context, param MergeFaceParam) (*MergeFaceData, error) {
+	if err := param.validate(); err != nil {
+		return nil, apiErr.ErrInvalidParameter(err.Error())
+	}
+	mergeParam := faceai.MergeFaceParam{
+		ImageTemplate: faceai.MergeFaceImage{
+			Image:     param.TemplateImage,
+			ImageType: "URL",
+		},
+		ImageTarget: faceai.MergeFaceImage{
+			Image:     param.TargetImage,
+			ImageType: "URL",
+		},
+	}
+	img, err := srv.faceAICli.MergeFace(ctx, mergeParam)
+	if err != nil {
+		log.Errorf("faceAICli.MergeFace err:%+v", err)
+		return nil, err
+	}
+	imageURL, err := srv.upload(ctx, img)
+	if err != nil {
+		log.Errorf("upload err:%+v", err)
+		return nil, err
+	}
+	data := new(MergeFaceData)
+	data.Image = imageURL
+	return data, nil
+}
+
+func (srv *Service) BodySeg(ctx context.Context, param BodySegParam) (*BodySegData, error) {
+	if err := param.validate(); err != nil {
+		return nil, apiErr.ErrInvalidParameter(err.Error())
+	}
+	u, err := url.Parse(param.Image)
+	if err != nil {
+		return nil, apiErr.ErrInvalidParameter(err.Error())
+	}
+	key := strings.TrimPrefix(u.Path, "/")
+	b64, err := srv.fetchAndBas64Encode(ctx, key)
+	if err != nil {
+		log.Errorf("fetchAndBas64Encode with key %+v err:%+v", key, err)
+		return nil, err
+	}
+	log.Debugf("encode finish with length %+v", len(b64))
+	ret, err := srv.faceAICli.BodySeg(ctx, faceai.BodySegParam{
+		Image: b64,
+		Type:  "foreground",
+	})
+	if err != nil {
+		log.Errorf("faceAICli.BodySeg err:%+v", err)
+		return nil, err
+	}
+	if len(ret.Foreground) == 0 {
+		return nil, apiErr.ErrBodyNotFound()
+	}
+	imageURL, err := srv.upload(ctx, ret.Foreground)
+	if err != nil {
+		log.Errorf("upload err:%+v", err)
+		return nil, err
+	}
+	data := new(BodySegData)
+	data.Image = imageURL
+	return data, nil
+}
+
 func (srv *Service) fetchAndBas64Encode(ctx context.Context, key string) (string, error) {
 	bucket, err := srv.ossCli.Bucket(srv.ossBucketName)
 	if err != nil {
+		log.Errorf("Bucket err:%+v", err)
 		return "", err
 	}
 	r, err := bucket.GetObject(key)
 	if err != nil {
+		log.Errorf("GetObject err:%+v", err)
 		return "", err
 	}
 	defer r.Close()
@@ -248,9 +355,10 @@ func (srv *Service) upload(ctx context.Context, b64 string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err = bucket.PutObject(uuid.String(), bytes.NewBuffer(b), oss.ContentType("image/jpg"))
+	key := fmt.Sprintf("%s%s.jpg", srv.pathPrefix, uuid)
+	err = bucket.PutObject(key, bytes.NewBuffer(b), oss.ContentType("image/jpg"))
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%s/%s", srv.ossPublicBucketEndpoint, uuid.String()), nil
+	return fmt.Sprintf("%s/%s", srv.ossPublicBucketEndpoint, key), nil
 }

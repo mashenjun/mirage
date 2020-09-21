@@ -2,8 +2,8 @@ package service
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
-	"io/ioutil"
 	"testing"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
@@ -13,8 +13,8 @@ import (
 
 var (
 	b64 = ""
-	ak  = ""
-	sk  = ""
+	ak  = "LTAI4G4ACJMKyJuckg8p6Ffz"
+	sk  = "1ZBx1TKBLipNcQ27fc3GT1ARj0ZopN"
 	arn = ""
 )
 
@@ -23,21 +23,32 @@ func TestService_FetchAndBase64(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	bucket, err := ossCli.Bucket("mirage-test")
+	srv, err := New(nil,nil,nil, ossCli, OSSOption("mirage-test",
+		"http://oss-cn-hongkong.aliyuncs.com",
+		"http://oss-cn-hongkong.aliyuncs.com"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(bucket)
-	r, err := bucket.GetObject("image/autistic-child6.jpg")
+	s, err := srv.fetchAndBas64Encode(context.Background(), "input/IMG/20200826155432.jpg")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
-	buf, err := ioutil.ReadAll(r)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(base64.StdEncoding.EncodeToString(buf))
+	t.Log(s)
+	// bucket, err := ossCli.Bucket("mirage-test")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// t.Log(bucket)
+	// r, err := bucket.GetObject("input/IMG/20200826155432.jpg")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// defer r.Close()
+	// buf, err := ioutil.ReadAll(r)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// t.Log(base64.StdEncoding.EncodeToString(buf))
 }
 
 func TestService_Upload(t *testing.T) {
