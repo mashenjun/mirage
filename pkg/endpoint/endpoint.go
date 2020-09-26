@@ -20,6 +20,7 @@ func (ep *Endpoint) MountOn(router *gin.Engine) {
 	apiV1 := router.Group("/api/v1")
 	apiV1.GET("/config/advertise", ep.GetAdvertise)
 	apiV1.GET("/config/template", ep.GetTemplates)
+	apiV1.GET("/config/version_update", ep.GetVersionUpdate)
 	apiV1.POST("/face/detect", ep.DetectFace)
 	apiV1.POST("/face/edit_attr", ep.EditAttr)
 	apiV1.POST("/face/merge", ep.MergeFace)
@@ -56,6 +57,15 @@ func (ep *Endpoint) GetTemplates(ctx *gin.Context) {
 		return
 	}
 	util.EncodeResp(ctx, data)
+}
+
+func (ep *Endpoint) GetVersionUpdate(ctx *gin.Context) {
+	data, err := ep.srv.GetVersionUpdate(ctx)
+	if err != nil {
+		util.EncodeError(ctx, err)
+		return
+	}
+	util.EncodeBytes(ctx, data)
 }
 
 func (ep *Endpoint) GetAccessCode(ctx *gin.Context) {

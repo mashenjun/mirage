@@ -66,6 +66,10 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	globalConfigDao, err := model.NewGlobalConfigDao(rdsCli)
+	if err != nil {
+		log.Panic(err)
+	}
 	faceAICli, err := faceai.New(config.Options.FaceAI.Endpoint,
 		config.Options.FaceAI.Ak, config.Options.FaceAI.Sk,
 		faceai.CacheOption(rdsCli),
@@ -78,7 +82,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	srv, err := service.New(advDao, templateDao, faceAICli, ossCli,
+	srv, err := service.New(advDao, templateDao, globalConfigDao, faceAICli, ossCli,
 		service.OSSOption(config.Options.OSS.BucketName, config.Options.OSS.PublicEndpoint, config.Options.OSS.PublicBucketEndpoint, config.Options.OSS.PathPrefix),
 		service.STSOption(config.Options.STS.RamAK, config.Options.STS.RamSK, config.Options.STS.ARN))
 	if err != nil {

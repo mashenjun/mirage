@@ -39,6 +39,8 @@ func (dao *TemplateImageDao) Find(ctx context.Context, typ string) (*TemplateIma
 	bs, err := dao.rdsCli.Get(ctx, key).Bytes()
 	if err != nil {
 		return nil, err
+	}else if err == redis.Nil {
+		return EmptyTemplateImageConfig, nil
 	}
 	cfg := new(TemplateImageConfig)
 	cfg.Templates = make([]TemplateImage, 0)

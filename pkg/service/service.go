@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -18,13 +19,12 @@ import (
 	"github.com/mashenjun/mirage/log"
 	"github.com/mashenjun/mirage/model"
 	"github.com/mashenjun/mirage/third_party/faceai"
-
-	"context"
 )
 
 type Service struct {
 	advDao      model.IAdvertiseDao
 	templateDao model.ITemplateImageDao
+	globalDao   model.IGlobalConfigDao
 	faceAICli   *faceai.Client
 
 	ossCli *oss.Client
@@ -60,10 +60,12 @@ func STSOption(ak string, sk string, arn string) Option {
 	}
 }
 
-func New(advDao model.IAdvertiseDao, templateDao model.ITemplateImageDao, faceAICli *faceai.Client, ossCli *oss.Client, opts ...Option) (*Service, error) {
+func New(advDao model.IAdvertiseDao, templateDao model.ITemplateImageDao, globalConfigDao model.IGlobalConfigDao,
+	faceAICli *faceai.Client, ossCli *oss.Client, opts ...Option) (*Service, error) {
 	srv := &Service{
 		advDao:      advDao,
 		templateDao: templateDao,
+		globalDao:   globalConfigDao,
 		faceAICli:   faceAICli,
 		ossCli:      ossCli,
 	}
@@ -78,11 +80,9 @@ func New(advDao model.IAdvertiseDao, templateDao model.ITemplateImageDao, faceAI
 // GetAdvertise returns Advertise Data
 func (srv *Service) GetAdvertise(ctx context.Context, param GetAdvertiseParam) (*model.AdvConfig, error) {
 	adv, err := srv.advDao.Find(ctx, param.AdCode)
-	if err != nil && err != redis.Nil {
+	if err != nil {
 		log.Errorf("advDao.Find err:%+v", err)
 		return nil, err
-	} else if err == redis.Nil {
-		return model.EmptyAdvConfig, nil
 	}
 	return adv, nil
 }
@@ -90,12 +90,21 @@ func (srv *Service) GetAdvertise(ctx context.Context, param GetAdvertiseParam) (
 func (srv *Service) GetTemplate(ctx context.Context, param GetTemplateParam) (*model.TemplateImageConfig, error) {
 	template, err := srv.templateDao.Find(ctx, param.Type)
 	if err != nil && err != redis.Nil {
-		log.Errorf("advDao.Find err:%+v", err)
+		log.Errorf("templateDao.Find err:%+v", err)
 		return nil, err
-	} else if err == redis.Nil {
-		return model.EmptyTemplateImageConfig, nil
 	}
 	return template, nil
+}
+
+func (srv *Service) GetVersionUpdate(ctx context.Context) ([]byte, error) {
+	bs, err := srv.globalDao.Find(ctx, "version_update")
+	if err != nil && err != redis.Nil {
+		log.Errorf("globalDao.Find err:%+v", err)
+		return nil, err
+	} else if err == redis.Nil {
+		return nil, nil
+	}
+	return bs, nil
 }
 
 // GetAccessCode returns access code from baidu ai

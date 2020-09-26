@@ -22,7 +22,7 @@ type AdvCandidate struct {
 	CoolDown  int64  `json:"cool_down"`
 	CountDown int64  `json:"count_down"`
 	Location  string `json:"location"` // 跳转地址
-	Action    int64  `json:"action"` // 0 广告; 1 原生; 2 webView
+	Action    int64  `json:"action"`   // 0 广告; 1 原生; 2 webView
 }
 
 type AdvConfig struct {
@@ -44,8 +44,10 @@ func NewAdvertiseDao(rdsCli *redis.Client) (*AdvertiseDao, error) {
 func (dao *AdvertiseDao) Find(ctx context.Context, adCode string) (*AdvConfig, error) {
 	key := fmt.Sprintf("adv:%s", adCode)
 	bs, err := dao.rdsCli.Get(ctx, key).Bytes()
-	if err != nil {
+	if err != nil && err != redis.Nil{
 		return nil, err
+	}else if err == redis.Nil {
+		return EmptyAdvConfig, nil
 	}
 	adv := new(AdvConfig)
 	adv.Candidates = make([]AdvCandidate, 0)

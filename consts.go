@@ -1,5 +1,7 @@
 package consts
 
+import "encoding/json"
+
 var (
 	OpenIDKey = "OpenIDKey"
 	EmpNoKey  = "EmpNoKey"
@@ -35,3 +37,5 @@ func (ss siteSlice) GetOtherSites(siteID int64) siteSlice {
 	}
 	return ret
 }
+
+var EmptyJson, _ = json.Marshal(struct {}{})

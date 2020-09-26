@@ -47,6 +47,17 @@ func EncodeResp(gCtx *gin.Context, data interface{}) {
 	gCtx.JSON(http.StatusOK, resp)
 }
 
+func EncodeBytes(gCtx *gin.Context, bs []byte) {
+	if len(bs) == 0 {
+		gCtx.Data(http.StatusOK, "application/json", []byte(`{"code":0, "message":"ok", "data":{}}`))
+		return
+	}
+	data := []byte(`{"code":0, "message":"ok", "data":`)
+	data = append(data, bs...)
+	data = append(data,'}')
+	gCtx.Data(http.StatusOK, "application/json", data)
+}
+
 func IsToday(t time.Time) bool {
 	return time.Now().Format("2006-01-02") == t.Local().Format("2006-01-02")
 }
