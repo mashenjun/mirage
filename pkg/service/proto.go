@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 )
 
 type GetAdvertiseParam struct {
@@ -46,6 +47,10 @@ func (param *EditAttrParam) validate() error {
 		return errors.New("param.action_type is invalid")
 	}
 	return nil
+}
+
+func (param *EditAttrParam) GetImageReSize() string {
+	return fmt.Sprintf("%s?x-oss-process=image/resize,w_2000,h_2000", param.Image)
 }
 
 type EditAttrData struct {

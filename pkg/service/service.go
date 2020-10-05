@@ -181,7 +181,7 @@ func (srv *Service) EditAttr(ctx context.Context, param EditAttrParam) (*EditAtt
 	// }
 	// log.Debugf("encode finish with length %+v", len(b64))
 	ret, err := srv.faceAICli.EditAttr(ctx, faceai.EditAttrParam{
-		Image:      param.Image,
+		Image:      param.GetImageReSize(),
 		ImageType:  "URL",
 		ActionType: param.ActionType,
 	})

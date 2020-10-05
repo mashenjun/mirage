@@ -18,6 +18,7 @@ type AdvCandidate struct {
 	Height    int64  `json:"height"`
 	Width     int64  `json:"width"`
 	AdChannel string `json:"ad_channel"`
+	Title     string `json:"title"`
 	ImageURL  string `json:"image_url"`
 	CoolDown  int64  `json:"cool_down"`
 	CountDown int64  `json:"count_down"`
@@ -44,9 +45,9 @@ func NewAdvertiseDao(rdsCli *redis.Client) (*AdvertiseDao, error) {
 func (dao *AdvertiseDao) Find(ctx context.Context, adCode string) (*AdvConfig, error) {
 	key := fmt.Sprintf("adv:%s", adCode)
 	bs, err := dao.rdsCli.Get(ctx, key).Bytes()
-	if err != nil && err != redis.Nil{
+	if err != nil && err != redis.Nil {
 		return nil, err
-	}else if err == redis.Nil {
+	} else if err == redis.Nil {
 		return EmptyAdvConfig, nil
 	}
 	adv := new(AdvConfig)
