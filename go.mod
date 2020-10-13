@@ -5,6 +5,7 @@ go 1.14
 require (
 	
 	
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/aliyun/aliyun-oss-go-sdk v2.1.4+incompatible
 	github.com/aliyun/aliyun-sts-go-sdk v0.0.0-20171106034748-98d3903a2309
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -17,5 +18,6 @@ require (
 	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/sony/gobreaker v0.4.1
+	github.com/swaggo/swag v1.6.7
 	gopkg.in/yaml.v2 v2.3.0
 )

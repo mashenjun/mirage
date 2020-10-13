@@ -13,13 +13,13 @@ var EmptyAdvConfig = &AdvConfig{
 }
 
 type AdvCandidate struct {
-	AdCode    string `json:"ad_code"`
-	AdID      string `json:"ad_id"`
+	AdCode    string `json:"ad_code"` // 广告code
+	AdID      string `json:"ad_id"` // 广告ID
 	Height    int64  `json:"height"`
 	Width     int64  `json:"width"`
-	AdChannel string `json:"ad_channel"`
+	AdChannel string `json:"ad_channel"` // 渠道
 	Title     string `json:"title"`
-	ImageURL  string `json:"image_url"`
+	ImageURL  string `json:"image_url"` // 广告素材，图片地址
 	CoolDown  int64  `json:"cool_down"`
 	CountDown int64  `json:"count_down"`
 	Location  string `json:"location"` // 跳转地址

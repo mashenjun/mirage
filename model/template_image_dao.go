@@ -14,8 +14,8 @@ var EmptyTemplateImageConfig = &TemplateImageConfig{
 
 type TemplateImage struct {
 	Name        string `json:"name"`
-	Image       string `json:"image"`
-	Description string `json:"description"`
+	Image       string `json:"image"` // 图片地址
+	Description string `json:"description"` // 详细文案
 }
 
 type TemplateImageConfig struct {

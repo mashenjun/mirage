@@ -1,0 +1,274 @@
+basePath: /api/v1
+definitions:
+  errors.ErrorInfo:
+    properties:
+      code:
+        description: 0 成功，非0 失败
+        type: integer
+      message:
+        type: string
+    type: object
+  model.AdvCandidate:
+    properties:
+      action:
+        description: 0 广告; 1 原生; 2 webView
+        type: integer
+      ad_channel:
+        description: 渠道
+        type: string
+      ad_code:
+        description: 广告code
+        type: string
+      ad_id:
+        description: 广告ID
+        type: string
+      cool_down:
+        type: integer
+      count_down:
+        type: integer
+      height:
+        type: integer
+      image_url:
+        description: 广告素材，图片地址
+        type: string
+      location:
+        description: 跳转地址
+        type: string
+      title:
+        type: string
+      width:
+        type: integer
+    type: object
+  model.AdvConfig:
+    properties:
+      candidates:
+        items:
+          $ref: '#/definitions/model.AdvCandidate'
+        type: array
+    type: object
+  model.TemplateImage:
+    properties:
+      description:
+        description: 详细文案
+        type: string
+      image:
+        description: 图片地址
+        type: string
+      name:
+        type: string
+    type: object
+  model.TemplateImageConfig:
+    properties:
+      templates:
+        items:
+          $ref: '#/definitions/model.TemplateImage'
+        type: array
+    type: object
+  service.DetectFaceData:
+    properties:
+      age:
+        type: number
+    type: object
+  service.DetectFaceParam:
+    properties:
+      image:
+        description: image is the url point to oss url
+        type: string
+    type: object
+  service.EditAttrData:
+    properties:
+      image:
+        description: 图片地址
+        type: string
+    type: object
+  service.EditAttrParam:
+    properties:
+      action_type:
+        enum:
+        - TO_KID
+        - TO_OLD
+        - TO_MALE
+        - TO_FEMAL
+        type: string
+      image:
+        type: string
+    type: object
+  service.MergeFaceData:
+    properties:
+      image:
+        type: string
+    type: object
+  util.BaseResp:
+    properties:
+      code:
+        description: 0 成功，非0 失败
+        type: integer
+      data:
+        type: object
+      message:
+        type: string
+    type: object
+info:
+  contact:
+    name: Mirage Backend Support
+    url: https://github.com/mashenjun/mirage/issues
+  description: This is mirage backend server.
+  license: {}
+  title: Mirage Backend API
+  version: "1.0"
+paths:
+  /config/advertise:
+    get:
+      description: 获取广告配置
+      parameters:
+      - description: 广告code
+        in: query
+        name: type
+        required: true
+        type: string
+      - description: 额外信息
+        in: query
+        name: extra
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 广告配置
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.AdvConfig'
+              type: object
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 获取广告配置
+      tags:
+      - 静态配置API
+  /config/template:
+    get:
+      description: 获取版本配置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 版本配置
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 获取版本配置
+      tags:
+      - 静态配置API
+  /face/detect:
+    post:
+      consumes:
+      - application/json
+      description: 检测人脸年龄
+      parameters:
+      - description: 图片地址
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.DetectFaceParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 检测结果，如果没有检测出人脸，code不为0
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.DetectFaceData'
+              type: object
+        "400":
+          description: 请求参数不正确
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 检测人脸年龄
+      tags:
+      - 人脸处理API
+  /face/edit_attr:
+    post:
+      consumes:
+      - application/json
+      description: 人脸变老，变年轻，变性别
+      parameters:
+      - description: json parameter
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.EditAttrParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 处理结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.EditAttrData'
+              type: object
+        "400":
+          description: 请求参数不正确
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 人脸变老，变年轻，变性别
+      tags:
+      - 人脸处理API
+  /face/merge:
+    post:
+      consumes:
+      - application/json
+      description: 人脸融合
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 处理结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.MergeFaceData'
+              type: object
+        "400":
+          description: 请求参数不正确
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 人脸融合
+      tags:
+      - 人脸处理API
+swagger: "2.0"

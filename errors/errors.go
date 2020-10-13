@@ -6,7 +6,7 @@ import (
 )
 
 type ErrorInfo struct {
-	Code    uint32 `json:"code"`
+	Code    uint32 `json:"code"` // 0 成功，非0 失败
 	Message string `json:"message"`
 }
 

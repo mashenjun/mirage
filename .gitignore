@@ -19,3 +19,4 @@ vendor/
 dev
 .idea/*
 bin/
+vendor

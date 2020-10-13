@@ -36,7 +36,7 @@ type GetAccessCodeData struct {
 
 type EditAttrParam struct {
 	Image      string `json:"image"`
-	ActionType string `json:"action_type"`
+	ActionType string `json:"action_type" enums:"TO_KID,TO_OLD,TO_MALE,TO_FEMAL"`
 }
 
 func (param *EditAttrParam) validate() error {
@@ -54,7 +54,7 @@ func (param *EditAttrParam) GetImageReSize() string {
 }
 
 type EditAttrData struct {
-	Image string `json:"image"`
+	Image string `json:"image"` // 图片地址
 }
 
 type DetectFaceParam struct {
