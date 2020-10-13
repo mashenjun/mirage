@@ -77,7 +77,7 @@ func New(advDao model.IAdvertiseDao, templateDao model.ITemplateImageDao, global
 	return srv, nil
 }
 
-// GetAdvertise returns Advertise Data
+// GetAdvertise 从redis中获取广告配置
 func (srv *Service) GetAdvertise(ctx context.Context, param GetAdvertiseParam) (*model.AdvConfig, error) {
 	adv, err := srv.advDao.Find(ctx, param.AdCode)
 	if err != nil {
@@ -87,6 +87,7 @@ func (srv *Service) GetAdvertise(ctx context.Context, param GetAdvertiseParam) (
 	return adv, nil
 }
 
+// GetTemplate 从redis中获取素材模板
 func (srv *Service) GetTemplate(ctx context.Context, param GetTemplateParam) (*model.TemplateImageConfig, error) {
 	template, err := srv.templateDao.Find(ctx, param.Type)
 	if err != nil && err != redis.Nil {
@@ -96,6 +97,7 @@ func (srv *Service) GetTemplate(ctx context.Context, param GetTemplateParam) (*m
 	return template, nil
 }
 
+// GetVersionUpdate 从redis版本配置
 func (srv *Service) GetVersionUpdate(ctx context.Context) ([]byte, error) {
 	bs, err := srv.globalDao.Find(ctx, "version_update")
 	if err != nil && err != redis.Nil {
@@ -112,6 +114,7 @@ func (srv *Service) GetAccessCode(ctx context.Context, param GetAccessCodeParam)
 	return nil, apiErr.ErrUnimplemented()
 }
 
+// UploadSignature 返回给客户端上传oss所需要的配置
 func (srv *Service) UploadSignature(ctx context.Context) (*UploadSignatureData, error) {
 	sessionName := fmt.Sprintf("mirage@%d", time.Now().UnixNano())
 	client := sts.NewClient(srv.ramAK, srv.ramSK, srv.arn, sessionName)
@@ -136,17 +139,6 @@ func (srv *Service) DetectFace(ctx context.Context, param DetectFaceParam) (*Det
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
-	// u, err := url.Parse(param.Image)
-	// if err != nil {
-	// 	log.Errorf("parse err:%+v", err)
-	// 	return nil, apiErr.ErrInvalidParameter(err.Error())
-	// }
-	// key := strings.TrimPrefix(u.Path, "/")
-	// b64, err := srv.fetchAndBas64Encode(ctx, key)
-	// if err != nil {
-	// 	log.Errorf("fetchAndBas64Encode with key:%+v err:%+v", key, err)
-	// 	return nil, err
-	// }
 	_, info, err := srv.faceAICli.Detect(ctx, faceai.DetectParam{
 		Image:     param.Image,
 		ImageType: "URL",
@@ -168,18 +160,6 @@ func (srv *Service) EditAttr(ctx context.Context, param EditAttrParam) (*EditAtt
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}
-	// u, err := url.Parse(param.Image)
-	// if err != nil {
-	// 	log.Errorf("parse err:%+v", err)
-	// 	return nil, apiErr.ErrInvalidParameter(err.Error())
-	// }
-	// key := strings.TrimPrefix(u.Path, "/")
-	// b64, err := srv.fetchAndBas64Encode(ctx, key)
-	// if err != nil {
-	// 	log.Errorf("fetchAndBas64Encode with key %+v err:%+v", key, err)
-	// 	return nil, err
-	// }
-	// log.Debugf("encode finish with length %+v", len(b64))
 	ret, err := srv.faceAICli.EditAttr(ctx, faceai.EditAttrParam{
 		Image:      param.GetImageReSize(),
 		ImageType:  "URL",
@@ -234,7 +214,6 @@ func (srv *Service) StyleTrans(ctx context.Context, param StyleTransParam) (*Sty
 }
 
 func (srv *Service) SelieAnime(ctx context.Context, param SelfieAnimeParam) (*SelfieAnimeData, error) {
-	log.Infof("param:%+v", param)
 	if err := param.validate(); err != nil {
 		return nil, apiErr.ErrInvalidParameter(err.Error())
 	}

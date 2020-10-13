@@ -135,10 +135,9 @@ type MergeFaceResp struct {
 	Result MergeFaceData `json:"result"`
 }
 
-
 type BodySegParam struct {
 	Image string `json:"image" schema:"image"`
-	Type   string `json:"type" schema:"type"`
+	Type  string `json:"type" schema:"type"`
 }
 
 func (param *BodySegParam) ToForm() (url.Values, error) {
@@ -154,7 +153,7 @@ func (param *BodySegParam) ToForm() (url.Values, error) {
 
 type BodySegResp struct {
 	BaseResp
-	LabelMap string `json:"label_map"`
-	ScoreMap string `json:"score_map"`
+	LabelMap   string `json:"label_map"`
+	ScoreMap   string `json:"score_map"`
 	Foreground string `json:"foreground"`
 }

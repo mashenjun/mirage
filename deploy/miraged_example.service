@@ -1,0 +1,16 @@
+[Unit]
+Description= Service (Miraged)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/data/app/mirage
+User=root
+Group=root
+ExecStart=/bin/bash -c "/home/data/app/mirage/miraged --cfgPath=/home/data/config/mirage/config.yaml >> /home/data/logs/mirage/systemd_std.log 2>&1"
+ExecReload=/bin/kill -INT $MAINPID
+Restart=always
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

@@ -104,6 +104,7 @@ func (cli *Client) setAccessTokenToCache(ctx context.Context, accessToken string
 	return nil
 }
 
+// EditAttr 调用人脸属性编辑接口
 func (cli *Client) EditAttr(ctx context.Context, param EditAttrParam) (*EditAttData, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {
@@ -121,6 +122,7 @@ func (cli *Client) EditAttr(ctx context.Context, param EditAttrParam) (*EditAttD
 	return &ret.Result, nil
 }
 
+// Detect 调用人脸检测接口
 func (cli *Client) Detect(ctx context.Context, param DetectParam) (int64, []FaceInfo, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {
@@ -138,6 +140,7 @@ func (cli *Client) Detect(ctx context.Context, param DetectParam) (int64, []Face
 	return ret.Result.FaceNum, ret.Result.FaceList, nil
 }
 
+// StyleTrans 调用图片风格转换接口
 func (cli *Client) StyleTrans(ctx context.Context, param StyleTransParam) (string, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {
@@ -159,6 +162,7 @@ func (cli *Client) StyleTrans(ctx context.Context, param StyleTransParam) (strin
 	return ret.Image, nil
 }
 
+// StyleTrans 调用人像动漫化接口
 func (cli *Client) SelfieAnime(ctx context.Context, param SelfieAnimeParam) (string, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {
@@ -180,6 +184,7 @@ func (cli *Client) SelfieAnime(ctx context.Context, param SelfieAnimeParam) (str
 	return ret.Image, nil
 }
 
+// MergeFace 调用人脸融合接口
 func (cli *Client) MergeFace(ctx context.Context, param MergeFaceParam) (string, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {
@@ -197,6 +202,7 @@ func (cli *Client) MergeFace(ctx context.Context, param MergeFaceParam) (string,
 	return ret.Result.MergeImage, nil
 }
 
+// BodySeg 调用人像分割接口
 func (cli *Client) BodySeg(ctx context.Context, param BodySegParam) (*BodySegResp, error) {
 	token, err := cli.getAccessToken(ctx)
 	if err != nil {

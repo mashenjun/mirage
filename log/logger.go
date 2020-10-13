@@ -1,3 +1,6 @@
+// This package is copy form github.com/containous/traefik/log
+// and adding a SetReportCaller func to control the report
+
 package log
 
 import (
@@ -10,7 +13,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// this package is copy form github.com/containous/traefik/log but adding a SetReportCaller func to control the report
 // Logger allows overriding the logrus logger behavior
 type Logger interface {
 	logrus.FieldLogger
