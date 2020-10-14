@@ -28,7 +28,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/config/advertise": {
+        "/api/v1/config/advertise": {
             "get": {
                 "description": "获取广告配置",
                 "produces": [
@@ -81,7 +81,7 @@ var doc = `{
                 }
             }
         },
-        "/config/template": {
+        "/api/v1/config/template": {
             "get": {
                 "description": "获取版本配置",
                 "produces": [
@@ -122,7 +122,7 @@ var doc = `{
                 }
             }
         },
-        "/face/detect": {
+        "/api/v1/face/detect": {
             "post": {
                 "description": "检测人脸年龄",
                 "consumes": [
@@ -180,7 +180,7 @@ var doc = `{
                 }
             }
         },
-        "/face/edit_attr": {
+        "/api/v1/face/edit_attr": {
             "post": {
                 "description": "人脸变老，变年轻，变性别",
                 "consumes": [
@@ -238,7 +238,7 @@ var doc = `{
                 }
             }
         },
-        "/face/merge": {
+        "/api/v1/face/merge": {
             "post": {
                 "description": "人脸融合",
                 "consumes": [
@@ -251,6 +251,17 @@ var doc = `{
                     "人脸处理API"
                 ],
                 "summary": "人脸融合",
+                "parameters": [
+                    {
+                        "description": "json parameter",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.MergeFaceParam"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "处理结果",
@@ -264,6 +275,160 @@ var doc = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/service.MergeFaceData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数不正确",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/image_process/body_seg": {
+            "post": {
+                "description": "人像分割",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图像处理API"
+                ],
+                "summary": "人像分割",
+                "parameters": [
+                    {
+                        "description": "json parameter",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.BodySegParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "处理结果",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/service.BodySegData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数不正确",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorInfo"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/image_process/selie_anime": {
+            "post": {
+                "description": "获取阿里云STS配置",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片上传API"
+                ],
+                "summary": "获取阿里云STS配置",
+                "responses": {
+                    "200": {
+                        "description": "sts临时配置",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/service.UploadSignatureData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/errors.ErrorInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/image_process/style_trans": {
+            "post": {
+                "description": "图片风格转换",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图像处理API"
+                ],
+                "summary": "图片风格转换",
+                "parameters": [
+                    {
+                        "description": "json parameter",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.StyleTransParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "处理结果",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.BaseResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/service.StyleTransData"
                                         }
                                     }
                                 }
@@ -381,6 +546,22 @@ var doc = `{
                 }
             }
         },
+        "service.BodySegData": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.BodySegParam": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
         "service.DetectFaceData": {
             "type": "object",
             "properties": {
@@ -432,6 +613,78 @@ var doc = `{
                 }
             }
         },
+        "service.MergeFaceParam": {
+            "type": "object",
+            "properties": {
+                "target_image": {
+                    "type": "string"
+                },
+                "template_image": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.SelfieAnimeData": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.SelfieAnimeParam": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.StyleTransData": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.StyleTransParam": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "option": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.UploadSignatureData": {
+            "type": "object",
+            "properties": {
+                "access_key_id": {
+                    "type": "string"
+                },
+                "access_key_secret": {
+                    "type": "string"
+                },
+                "bucket_name": {
+                    "type": "string"
+                },
+                "end_point": {
+                    "type": "string"
+                },
+                "expiration": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "security_token": {
+                    "type": "string"
+                }
+            }
+        },
         "util.BaseResp": {
             "type": "object",
             "properties": {
@@ -463,7 +716,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "",
-	BasePath:    "/api/v1",
+	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "Mirage Backend API",
 	Description: "This is mirage backend server.",

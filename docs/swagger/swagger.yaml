@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   errors.ErrorInfo:
     properties:
@@ -64,6 +63,16 @@ definitions:
           $ref: '#/definitions/model.TemplateImage'
         type: array
     type: object
+  service.BodySegData:
+    properties:
+      image:
+        type: string
+    type: object
+  service.BodySegParam:
+    properties:
+      image:
+        type: string
+    type: object
   service.DetectFaceData:
     properties:
       age:
@@ -98,6 +107,52 @@ definitions:
       image:
         type: string
     type: object
+  service.MergeFaceParam:
+    properties:
+      target_image:
+        type: string
+      template_image:
+        type: string
+    type: object
+  service.SelfieAnimeData:
+    properties:
+      image:
+        type: string
+    type: object
+  service.SelfieAnimeParam:
+    properties:
+      image:
+        type: string
+    type: object
+  service.StyleTransData:
+    properties:
+      image:
+        type: string
+    type: object
+  service.StyleTransParam:
+    properties:
+      image:
+        type: string
+      option:
+        type: string
+    type: object
+  service.UploadSignatureData:
+    properties:
+      access_key_id:
+        type: string
+      access_key_secret:
+        type: string
+      bucket_name:
+        type: string
+      end_point:
+        type: string
+      expiration:
+        type: integer
+      path:
+        type: string
+      security_token:
+        type: string
+    type: object
   util.BaseResp:
     properties:
       code:
@@ -117,7 +172,7 @@ info:
   title: Mirage Backend API
   version: "1.0"
 paths:
-  /config/advertise:
+  /api/v1/config/advertise:
     get:
       description: 获取广告配置
       parameters:
@@ -149,7 +204,7 @@ paths:
       summary: 获取广告配置
       tags:
       - 静态配置API
-  /config/template:
+  /api/v1/config/template:
     get:
       description: 获取版本配置
       produces:
@@ -173,7 +228,7 @@ paths:
       summary: 获取版本配置
       tags:
       - 静态配置API
-  /face/detect:
+  /api/v1/face/detect:
     post:
       consumes:
       - application/json
@@ -208,7 +263,7 @@ paths:
       summary: 检测人脸年龄
       tags:
       - 人脸处理API
-  /face/edit_attr:
+  /api/v1/face/edit_attr:
     post:
       consumes:
       - application/json
@@ -243,11 +298,18 @@ paths:
       summary: 人脸变老，变年轻，变性别
       tags:
       - 人脸处理API
-  /face/merge:
+  /api/v1/face/merge:
     post:
       consumes:
       - application/json
       description: 人脸融合
+      parameters:
+      - description: json parameter
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.MergeFaceParam'
       produces:
       - application/json
       responses:
@@ -271,4 +333,96 @@ paths:
       summary: 人脸融合
       tags:
       - 人脸处理API
+  /api/v1/image_process/body_seg:
+    post:
+      consumes:
+      - application/json
+      description: 人像分割
+      parameters:
+      - description: json parameter
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.BodySegParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 处理结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.BodySegData'
+              type: object
+        "400":
+          description: 请求参数不正确
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 人像分割
+      tags:
+      - 图像处理API
+  /api/v1/image_process/selie_anime:
+    post:
+      description: 获取阿里云STS配置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sts临时配置
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.UploadSignatureData'
+              type: object
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 获取阿里云STS配置
+      tags:
+      - 图片上传API
+  /api/v1/image_process/style_trans:
+    post:
+      consumes:
+      - application/json
+      description: 图片风格转换
+      parameters:
+      - description: json parameter
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.StyleTransParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 处理结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.BaseResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.StyleTransData'
+              type: object
+        "400":
+          description: 请求参数不正确
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+        "500":
+          description: 服务异常
+          schema:
+            $ref: '#/definitions/errors.ErrorInfo'
+      summary: 图片风格转换
+      tags:
+      - 图像处理API
 swagger: "2.0"

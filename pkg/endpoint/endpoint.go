@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	apiErr "github.com/mashenjun/mirage/errors"
-	"github.com/mashenjun/mirage/log"
 	"github.com/mashenjun/mirage/pkg/service"
 	"github.com/mashenjun/mirage/util"
 )
@@ -20,7 +19,6 @@ type Endpoint struct {
 // @description This is mirage backend server.
 // @contact.name Mirage Backend Support
 // @contact.url https://github.com/mashenjun/mirage/issues
-// @BasePath /api/v1
 // MountOn prepare the router
 func (ep *Endpoint) MountOn(router *gin.Engine) {
 	router.GET("/ping", ep.Ping)
@@ -51,7 +49,7 @@ func New(srv *service.Service) (*Endpoint, error) {
 // @Param extra query string false "额外信息"
 // @Success 200 {object} util.BaseResp{data=model.AdvConfig} "广告配置"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /config/advertise [get]
+// @Router /api/v1/config/advertise [get]
 func (ep *Endpoint) GetAdvertise(ctx *gin.Context) {
 	param := service.GetAdvertiseParam{}
 	param.AdCode = ctx.Query("type")
@@ -71,7 +69,7 @@ func (ep *Endpoint) GetAdvertise(ctx *gin.Context) {
 // @Param type query string true "素材模板名称"
 // @Success 200 {object} util.BaseResp{data=model.TemplateImageConfig} "素材模板配置"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /config/template [get]
+// @Router /api/v1/config/template [get]
 func (ep *Endpoint) GetTemplates(ctx *gin.Context) {
 	param := service.GetTemplateParam{}
 	param.Type = ctx.Query("type")
@@ -89,7 +87,7 @@ func (ep *Endpoint) GetTemplates(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} util.BaseResp{data=[]byte} "版本配置"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /config/template [get]
+// @Router /api/v1/config/template [get]
 func (ep *Endpoint) GetVersionUpdate(ctx *gin.Context) {
 	data, err := ep.srv.GetVersionUpdate(ctx)
 	if err != nil {
@@ -126,7 +124,7 @@ func (ep *Endpoint) Ping(ctx *gin.Context) {
 // @Success 200 {object} util.BaseResp{data=service.DetectFaceData} "检测结果，如果没有检测出人脸，code不为0"
 // @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /face/detect [post]
+// @Router /api/v1/face/detect [post]
 func (ep *Endpoint) DetectFace(ctx *gin.Context) {
 	param := service.DetectFaceParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
@@ -150,7 +148,7 @@ func (ep *Endpoint) DetectFace(ctx *gin.Context) {
 // @Success 200 {object} util.BaseResp{data=service.EditAttrData} "处理结果"
 // @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /face/edit_attr [post]
+// @Router /api/v1/face/edit_attr [post]
 func (ep *Endpoint) EditAttr(ctx *gin.Context) {
 	param := service.EditAttrParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
@@ -165,6 +163,16 @@ func (ep *Endpoint) EditAttr(ctx *gin.Context) {
 	util.EncodeResp(ctx, data)
 }
 
+// @Tags 图像处理API
+// @Summary 图片风格转换
+// @Description 图片风格转换
+// @Accept  json
+// @Produce json
+// @Param body body service.StyleTransParam true "json parameter"
+// @Success 200 {object} util.BaseResp{data=service.StyleTransData} "处理结果"
+// @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
+// @Failure 500 {object} errors.ErrorInfo "服务异常"
+// @Router /api/v1/image_process/style_trans [post]
 func (ep *Endpoint) StyleTrans(ctx *gin.Context) {
 	param := service.StyleTransParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
@@ -179,8 +187,17 @@ func (ep *Endpoint) StyleTrans(ctx *gin.Context) {
 	util.EncodeResp(ctx, data)
 }
 
+// @Tags 图像处理API
+// @Summary 人像动漫化
+// @Description 人像动漫化
+// @Accept  json
+// @Produce json
+// @Param body body service.SelfieAnimeParam true "json parameter"
+// @Success 200 {object} util.BaseResp{data=service.SelfieAnimeData} "处理结果"
+// @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
+// @Failure 500 {object} errors.ErrorInfo "服务异常"
+// @Router /api/v1/image_process/selie_anime [post]
 func (ep *Endpoint) SelieAnime(ctx *gin.Context) {
-	log.Info("SelieAnime")
 	param := service.SelfieAnimeParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
 		util.EncodeError(ctx, apiErr.ErrInvalidParameter(err.Error()))
@@ -194,6 +211,13 @@ func (ep *Endpoint) SelieAnime(ctx *gin.Context) {
 	util.EncodeResp(ctx, data)
 }
 
+// @Tags 图片上传API
+// @Summary 获取阿里云STS配置
+// @Description 获取阿里云STS配置
+// @Produce json
+// @Success 200 {object} util.BaseResp{data=service.UploadSignatureData} "sts临时配置"
+// @Failure 500 {object} errors.ErrorInfo "服务异常"
+// @Router /api/v1/image_process/selie_anime [post]
 func (ep *Endpoint) UploadSignature(ctx *gin.Context) {
 	data, err := ep.srv.UploadSignature(ctx)
 	if err != nil {
@@ -208,10 +232,11 @@ func (ep *Endpoint) UploadSignature(ctx *gin.Context) {
 // @Description 人脸融合
 // @Accept  json
 // @Produce json
+// @Param body body service.MergeFaceParam true "json parameter"
 // @Success 200 {object} util.BaseResp{data=service.MergeFaceData} "处理结果"
 // @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
 // @Failure 500 {object} errors.ErrorInfo "服务异常"
-// @Router /face/merge [post]
+// @Router /api/v1/face/merge [post]
 func (ep *Endpoint) MergeFace(ctx *gin.Context) {
 	param := service.MergeFaceParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
@@ -226,6 +251,16 @@ func (ep *Endpoint) MergeFace(ctx *gin.Context) {
 	util.EncodeResp(ctx, data)
 }
 
+// @Tags 图像处理API
+// @Summary 人像分割
+// @Description 人像分割
+// @Accept  json
+// @Produce json
+// @Param body body service.BodySegParam true "json parameter"
+// @Success 200 {object} util.BaseResp{data=service.BodySegData} "处理结果"
+// @Failure 400 {object} errors.ErrorInfo "请求参数不正确"
+// @Failure 500 {object} errors.ErrorInfo "服务异常"
+// @Router /api/v1/image_process/body_seg [post]
 func (ep *Endpoint) BodySeg(ctx *gin.Context) {
 	param := service.BodySegParam{}
 	if err := ctx.ShouldBindJSON(&param); err != nil {
