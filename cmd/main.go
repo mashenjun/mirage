@@ -29,7 +29,7 @@ var (
 )
 
 func main() {
-	flag.StringVar(&cfgPath, "cfgPath", "./", "mirage -cfgPath=/path/to/config.yaml")
+	flag.StringVar(&cfgPath, "cfgPath", "./", "miraged -cfgPath=/path/to/config.yaml")
 
 	flag.Parse()
 	if err := config.InitOption(cfgPath); err != nil {

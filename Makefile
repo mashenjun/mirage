@@ -27,7 +27,7 @@ dev:
 	$(GORUN) $(CURIR)cmd/main.go -cfgPath=$(CURIR)dev/config.yaml
 
 build_linux:
-	CGO=false GOOS=linux GOARCH=amd64 go build -o bin/miraged cmd/main.go
+	CGO=false GOOS=linux GOARCH=amd64 go build -mod=mod -o bin/miraged cmd/main.go
 
 swagger-spec: export GO111MODULE=on
 swagger-spec:
